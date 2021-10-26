@@ -1,14 +1,13 @@
 package org.hbrs.se1.ws21.uebung3.persistence;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class PersistenceStrategyStream<Member> implements PersistenceStrategy<Member> {
-
+    FileOutputStream fos = null;
+    ObjectOutputStream oos = null;
     // URL of file, in which the objects are stored
     private String location = "objects.ser";
 
@@ -17,7 +16,9 @@ public class PersistenceStrategyStream<Member> implements PersistenceStrategy<Me
     public void setLocation(String location) {
         this.location = location;
     }
-
+    public String getLocation(){
+        return location;
+    }
     @Override
     /**
      * Method for opening the connection to a stream (here: Input- and Output-Stream)
@@ -25,6 +26,7 @@ public class PersistenceStrategyStream<Member> implements PersistenceStrategy<Me
      * and save
      */
     public void openConnection() throws PersistenceException {
+        throw new PersistenceException(PersistenceException.ExceptionType.ImplementationNotAvailable,"Not implemented!");
 
     }
 
@@ -33,14 +35,25 @@ public class PersistenceStrategyStream<Member> implements PersistenceStrategy<Me
      * Method for closing the connections to a stream
      */
     public void closeConnection() throws PersistenceException {
-
+        throw new PersistenceException(PersistenceException.ExceptionType.ImplementationNotAvailable,"Not implemented!");
     }
 
     @Override
     /**
      * Method for saving a list of Member-objects to a disk (HDD)
      */
-    public void save(List<Member> member) throws PersistenceException  {
+    public void save(List<Member> member) throws PersistenceException {
+        try {
+            openConnection();
+            FileOutputStream fos = new FileOutputStream(this.location);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(member);
+        } catch (IOException | PersistenceException e) {
+            e.printStackTrace();
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,"Connection fail");
+        } finally {
+            closeConnection();
+        }
 
     }
 
@@ -50,24 +63,33 @@ public class PersistenceStrategyStream<Member> implements PersistenceStrategy<Me
      * Some coding examples come for free :-)
      * Take also a look at the import statements above ;-!
      */
-    public List<Member> load() throws PersistenceException  {
+    public List<Member> load() throws PersistenceException {
         // Some Coding hints ;-)
-        // ObjectInputStream ois = null;
-        // FileInputStream fis = null;
-        // List<...> newListe =  null;
-        //
         // Initiating the Stream (can also be moved to method openConnection()... ;-)
-        // fis = new FileInputStream( " a location to a file" );
-        // ois = new ObjectInputStream(fis);
+        ObjectInputStream ois = null;
+        FileInputStream fis = null;
+        List<Member> newListe = null;
 
-        // Reading and extracting the list (try .. catch ommitted here)
-        // Object obj = ois.readObject();
 
-        // if (obj instanceof List<?>) {
-        //       newListe = (List) obj;
-        // return newListe
+        try {
+            openConnection();
+            fis = new FileInputStream(this.location);
+            ois = new ObjectInputStream(fis);
 
-        // and finally close the streams (guess where this could be...?)
+            Object obj = ois.readObject();
+
+            if (obj instanceof LinkedList<?>) {
+                newListe = (List<Member>) obj;
+                return newListe;
+            }
+
+
+        } catch (IOException | ClassNotFoundException | PersistenceException e) {
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,"Connection fail");
+        }
+        finally {
+            closeConnection();
+        }
         return null;
     }
 }

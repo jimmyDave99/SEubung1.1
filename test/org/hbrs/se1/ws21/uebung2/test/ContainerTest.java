@@ -10,22 +10,22 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ContainerTest {
-    Container container=new Container();
 
+    Container container=Container.getInstance();
+    Container container2=Container.getInstance();//Test U3.3 Container1= Container2
     Member m1= new MemberID(1);
     Member m2= new MemberID(2);
     Member m3= new MemberID(3);
-    @Test
-    void testToString() {
+    Member m4= new MemberID(4);
 
-    }
     @Test
     void testAddMember()throws ContainerException {
         container.addMember(m1);
         container.addMember(m2);
         container.addMember(m3);
 
-        assertEquals(3,container.size());
+        container2.addMember(m4);
+        assertEquals(4,container.size());
         Assertions.assertThrows(ContainerException.class,()->{
             container.addMember(m2);
         });
