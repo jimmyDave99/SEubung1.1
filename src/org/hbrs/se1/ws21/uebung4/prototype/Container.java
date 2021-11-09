@@ -1,10 +1,7 @@
 package org.hbrs.se1.ws21.uebung4.prototype;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /*
@@ -76,6 +73,20 @@ public class Container {
 		
 		// Initialisierung des Eingabe-View
 		Scanner scanner = new Scanner( System.in );
+		Integer id = scanner.nextInt();
+		String name = scanner.nextLine();
+		String vorname = scanner.nextLine();
+		String role = scanner.nextLine();
+		String abteilung = scanner.nextLine();
+		String exspertise = scanner.nextLine();
+
+		//String[] array = {""+id ,name , vorname , role ,abteilung , exspertise};
+		//System.out.println(Arrays.toString(array));
+
+		Employee employe= new Employee(id,name,vorname,role,abteilung,exspertise);
+		this.liste.add(employe);
+		System.out.println(employe.toString());
+		this.store();
 
 		// Ausgabe eines Texts zur Begruessung
 		System.out.println("Employee-Tool V1.1 by Julius P. (dedicated to all my friends)");
@@ -91,7 +102,7 @@ public class Container {
 
 			// 	Falls 'help' eingegeben wurde, werden alle Befehle ausgedruckt
 			if ( strings[0].equals("help") ) {
-				System.out.println("Folgende Befehle stehen zur Verfuegung: help, dump....");
+				System.out.println("Folgende Befehle stehen zur Verfuegung: help, dump,load,search,exit,store, enter");
 			}
 			// Auswahl der bisher implementierten Befehle:
 			if ( strings[0].equals("dump") ) {
@@ -101,6 +112,7 @@ public class Container {
 			if ( strings[0].equals("enter") ) {
 				// Daten einlesen ...
 				// this.addEmployee( new Employee( data ) ) um das Objekt in die Liste einzufügen.
+				this.addEmployee(new Employee(id,name,vorname,role,abteilung,exspertise));
 			}
 								
 			if (  strings[0].equals("store")  ) {
@@ -109,6 +121,33 @@ public class Container {
 				employee.setPid(2);
 				this.addEmployee( employee );
 				this.store();
+			}
+			if ( strings[0].equals("search") ) {
+				if (strings[1].equals("Beginner")){
+					search("Beginner");
+				}
+				if(strings[1].equals("Experte")){
+					search("Experte");
+				}
+				if(strings[1].equals("Top-Performer")){
+					search("Top-Performer");
+				}
+
+			}
+			if(strings[0].equals("load")){
+
+				if(strings[1].equals("merge")){
+					this.load();
+				}
+				if (strings[1].equals("force")){
+					for (Employee employee: this.liste){
+						this.liste.remove(employee);
+					}
+					this.load();
+				}
+			}
+			if (strings[0].equals("exit")){
+				System.exit(0);
 			}
 
 
@@ -254,4 +293,13 @@ public class Container {
 		}
 		return null;
 	}
+
+	public void search(String exspertise){
+		for(Employee employee: liste){
+			if(employee.getExspertise().equals(exspertise)){
+				System.out.println(employee.getExspertise().toString());
+			}
+		}
+	}
+
 }

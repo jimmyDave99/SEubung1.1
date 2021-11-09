@@ -6,11 +6,29 @@ public class Employee implements java.io.Serializable, Comparable {
     private String name;
     private Integer pid;
     private String abteilung;
-
+    private String exspertise;
+    private String role;
     public String getAbteilung() {
         return abteilung;
     }
 
+    public Employee(Integer pid,String name,String vorname,String role,String abteilung,String exspertise){
+        this.exspertise=exspertise;
+        this.pid=pid;
+        this.name=name;
+        this.vorname=vorname;
+        this.abteilung=abteilung;
+        this.role=role;
+    }
+    public Employee(){
+
+    }
+    public String getExspertise(){
+        return  exspertise;
+    };
+    public void setExspertise(String exspertise) {
+        this.exspertise = exspertise;
+    }
     public void setAbteilung(String abteilung) {
         this.abteilung = abteilung;
     }
